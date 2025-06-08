@@ -1,0 +1,1522 @@
+<!-- Include jQuery Library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- Include jQuery UI Library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://assets.crowd.aws/crowd-html-elements.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<!-- Modal Style -->
+<style>
+    /* Modal Content, wrapping the image */
+    .modal-content {
+        position: absolute; /* Absolute positioning to allow dragging */
+        display: none; /* Size according to the image */
+        background-color: #fefefe;
+        border: 1px solid #888;
+        z-index: 1; /* Sit on top */
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 30%;
+        align-items: center; /* Center vertically */
+        justify-content: center; /* Center horizontally */
+        cursor: move; /* Indicates the modal can be moved */
+    }
+
+    /* The Close Button */
+    .close {
+        position: absolute;
+        right: 14px;
+        top: 4px;
+        color: #aaa;
+        font-size: 44px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+    }
+
+    img {
+        display: block; /* Remove default img inline properties */
+        max-width: 100%; /* Make width responsive */
+        height: auto; /* Maintain aspect ratio */
+    }
+
+    .resize-handle {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 10px;
+        height: 10px;
+        background: red;
+        cursor: nwse-resize; /* Diagonal cursor */
+        z-index: 10;
+    }
+
+    .unselectable {
+        user-select: none;
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -o-user-select: none;
+    }
+
+    .text-with-logo {
+        display: flex;
+        align-items: center;
+    }
+
+    .logo-button {
+        display: flex;
+        margin-left: 10px;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .tree-logo-button {
+        border-radius: 50%;
+        border: 2px solid #ccc;
+        background-color: #f0f0f0;
+        width: 30px;
+        height: 30px;
+        flex-shrink: 0; /* Prevent shrinking */
+        flex-grow: 0;
+    }
+
+    .logo-button i {
+        font-size: 21px; /* Adjust the size as needed */
+    }
+
+    .question-mark-logo {
+        font-size: 26px !important;
+    }
+
+    .tree-logo-button i {
+        color: green;
+    }
+
+    .tree-logo-button:hover {
+        background-color: #e0e0e0;
+        border-color: #999;
+    }
+</style>
+
+<!-- Modal Scripts -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Attach event listeners to modal buttons
+        document.querySelectorAll('.modal-button').forEach(button => {
+            button.onclick = function () {
+                var modal = document.getElementById(this.getAttribute('data-target'));
+                modal.style.display = modal.style.display === "flex" ? 'none' : 'flex'; // Set to flex to display and center the content
+                dragElement(modal.querySelector('.modal-content'));
+            }
+        });
+
+
+        // Attach close functionality to all close buttons
+        document.querySelectorAll('.close').forEach(close => {
+            close.onclick = function () {
+                this.closest('.modal-content').style.display = "none"; // Hide the modal
+            }
+        });
+
+        // Optional: Close modals on outside click
+        window.onclick = function (event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = "none";
+            }
+        };
+
+        function dragElement(element) {
+            const header = element.querySelector('.drag-area'); // Only the header part is draggable
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+            header.onmousedown = dragMouseDown;
+
+            function dragMouseDown(e) {
+                e = e || window.event;
+                e.preventDefault();
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e = e || window.event;
+                e.preventDefault();
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                element.style.top = (element.offsetTop - pos2) + "px";
+                element.style.left = (element.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
+
+        function makeResizableDiv(element) {
+            const resizers = element.querySelector('.resize-handle');
+            let initialAspectRatio;
+
+            resizers.addEventListener('mousedown', function (e) {
+                e.preventDefault();
+                // Calculate the initial aspect ratio once, when resizing starts
+                initialAspectRatio = element.offsetWidth / element.offsetHeight;
+                window.addEventListener('mousemove', resize);
+                window.addEventListener('mouseup', stopResize);
+            });
+
+            function resize(e) {
+                const originX = element.getBoundingClientRect().left;
+                const originY = element.getBoundingClientRect().top;
+                const deltaX = e.clientX - originX;
+                const deltaY = e.clientY - originY;
+
+                // Determine new dimensions while maintaining the initial aspect ratio
+                if (deltaX > deltaY * initialAspectRatio) {
+                    element.style.width = deltaX + 'px';
+                    element.style.height = deltaX / initialAspectRatio + 'px';
+                } else {
+                    element.style.height = deltaY + 'px';
+                    element.style.width = deltaY * initialAspectRatio + 'px';
+                }
+            }
+
+            function stopResize() {
+                window.removeEventListener('mousemove', resize);
+            }
+        }
+
+        // Applying the resizable function to the modal
+
+        document.querySelectorAll('.modal-content').forEach(modal => {
+            dragElement(modal);
+            makeResizableDiv(modal);
+        });
+
+    });
+</script>
+
+<!-- General UI scripts -->
+<script>
+    let successful = false;
+    let successfulEvent1 = false;
+    let successfulEvent2 = false;
+    const firstImage = "${Image1}";
+    const secondImage = "${Image2}";
+
+    // Utility functions
+    function concatenateStrings(words) {
+        if (!Array.isArray(words) || words.length === 0) {
+            return "";
+        }
+
+        if (words.length === 1) {
+            return words[0];
+        }
+
+        const allButLast = words.slice(0, -1).join(", ");
+        const lastWord = words[words.length - 1];
+
+        return allButLast + ' and ' + lastWord;
+    }
+
+    function intersection(setA, setB) {
+        return new Set([...setB].filter(elem => setA.has(elem)));
+    }
+
+    // Caption handling functions
+    function setDifferenceCaptionLabel(negativeButtons) {
+        const buttonNameMap = {
+            'accurate_caption': 'caption details',
+            'artifacts': 'artifacts',
+            'accurate': 'accuracy'
+        };
+        const textbox = document.querySelector('crowd-text-area[name="is_extensive_difference_caption_accurate_explenation"]');
+        if (negativeButtons.size > 0) {
+            const negativeButtonsDisplayNames = concatenateStrings([...negativeButtons].map(buttonName => buttonNameMap[buttonName]));
+            textbox.label = `Please modify the difference caption to accurately describe the difference (Address the ` + negativeButtonsDisplayNames + ` of the edit).`;
+        } else {
+            textbox.label = `Please modify the difference caption to accurately describe the difference.`;
+        }
+    }
+
+    function setSubcatrogyRequired(isRequired) {
+        const subCategoryButtons = ["visualy_consistence", "not_visualy_consistence", "good_quality", "not_good_quality"];
+        const subCategoryTextboxes = [
+            {'showButton': 'not_visualy_consistence', 'textbox': 'visualy_consistence_explanation'},
+            {'showButton': 'not_good_quality', 'textbox': 'good_quality_explanation'}
+        ];
+
+        // Iterate over subcategory buttons and set .required = isRequired
+        subCategoryButtons.forEach(name => {
+            document.querySelector("input[id=" + name + "]").required = isRequired;
+        });
+
+
+        // Iterate over subcategory text areas and set .required = isRequired
+        subCategoryTextboxes.forEach(textboxObject => {
+            const textboxShowRadioButton = document.querySelector("input[id=" + textboxObject['showButton'] + "]")
+            if (isRequired && textboxShowRadioButton.checked) {
+                document.querySelector("crowd-text-area[name=" + textboxObject['textbox'] + "]").required = isRequired;
+            } else if (!isRequired) {
+                document.querySelector("crowd-text-area[name=" + textboxObject['textbox'] + "]").required = isRequired;
+            }
+
+        });
+    }
+
+    function handleRadioChange(event, negativeButtons, visitedButtons) {
+        const button = event.target.value
+        const isMainButton = getButtonMainName(button);
+        if (isMainButton) {
+            handleMainButtons(button, negativeButtons, visitedButtons)
+        }
+
+        // Secondary Buttons
+        const isAccurateValue = document.querySelector('input[name="is_accurate"]:checked').value;
+        const isAccurateButton = (isAccurateValue === 'not_accurate' || isAccurateValue === 'partially_accurate' || isAccurateValue === 'accurate_but_unexpected');
+
+        if (button.includes('accurate') && !button.includes('caption')) {
+            setSubcatrogyRequired(isAccurateButton);
+        }
+
+        showVisualConsistencyCategory(isAccurateValue, isAccurateButton, button);
+        showGoodQualityCategory(isAccurateValue, isAccurateButton, button);
+    }
+
+    function getButtonMainName(button) {
+        if (button.includes('accurate') && !button.includes('difference')) {
+            return 'accurate'
+        } else if (button.includes('accurate') && button.includes('difference')) {
+            return 'accurate_caption'
+        } else if (button.includes('artifacts')) {
+            return 'artifacts'
+        }
+        return null;
+    }
+
+    function getDifferenceCaptionHTMLElement() {
+        return document.querySelector('crowd-text-area[name="is_extensive_difference_caption_accurate_explenation"]');
+    }
+
+    function updateSpecialMode() {
+        let textbox = getDifferenceCaptionHTMLElement();
+        if (textbox) {
+            if (textbox.inputElement.textarea.value.toLowerCase() == 'special mode on') {
+                console.log('Activating special Mode');
+                activateSpecialMode('1')
+            } else if (textbox.inputElement.textarea.value.toLowerCase() == 'special mode off') {
+                console.log('Disable special Mode');
+                activateSpecialMode('0')
+            }
+        }
+    }
+
+    function setDifferenceCaption() {
+        let textbox = getDifferenceCaptionHTMLElement();
+        const extensiveCaption = document.getElementById('extensive_difference_caption_span').textContent;
+        textbox.value = extensiveCaption;
+    }
+
+    function handleMainButtons(button, negativeButtons, visitedButtons) {
+        const differenceCaptionTriggerButtons = new Set(['accurate', 'artifacts', 'accurate_caption']);
+        const changedToNegative = button.includes('not') || button.includes('partially'); // add here difference caption, accuracy or artifacts.
+        const mainName = getButtonMainName(button);
+        visitedButtons.add(mainName);
+        changedToNegative ? negativeButtons.add(mainName) : negativeButtons.delete(mainName);
+        setDifferenceCaptionLabel(negativeButtons);
+        const textbox = document.querySelector('crowd-text-area[name="is_extensive_difference_caption_accurate_explenation"]');
+        const isDifferenceCaptionBoxEmpty = textbox.inputElement.textarea.textLength === 0;
+        updateSpecialMode();
+        if (isDifferenceCaptionBoxEmpty && intersection(visitedButtons, differenceCaptionTriggerButtons).size >= 3) {
+            if (!negativeButtons.has('accurate_caption') && (negativeButtons.has('artifacts') || negativeButtons.has('accurate'))) {
+                setDifferenceCaption();
+            }
+        }
+
+        textbox.style.display = negativeButtons.size === 0 ? 'none' : 'block';
+        textbox.required = negativeButtons.size > 0;
+    }
+
+    function showVisualConsistencyCategory(isAccurateValue, isAccurateButton, button) {
+        const visual_consistency_category = document.querySelector('#visualy_consistence_category');
+        const visualy_consistenceTextBox = document.querySelector('crowd-text-area[name="visualy_consistence_explanation"]');
+        const show_visual_consistency_category = isAccurateButton ? 'block' : 'none';
+        visual_consistency_category.style.display = show_visual_consistency_category;
+        if (button.includes('visualy_consistence')) {
+            visualy_consistenceTextBox.style.display = button.includes('not_') ? 'initial' : 'none';
+            visualy_consistenceTextBox.required = button.includes('not_');
+        }
+    }
+
+    function showGoodQualityCategory(isAccurateValue, isAccurateButton, button) {
+        const visual_quality_category = document.querySelector('#good_quality_category');
+        const good_qualityTextBox = document.querySelector('crowd-text-area[name="good_quality_explanation"]');
+        const show_visual_quality_category = isAccurateButton ? 'block' : 'none';
+        visual_quality_category.style.display = show_visual_quality_category;
+        if (button.includes('good_quality')) {
+            good_qualityTextBox.style.display = button.includes('not_') ? 'initial' : 'none';
+            good_qualityTextBox.required = button.includes('not_');
+        }
+    }
+
+    function findImageById(imgID) {
+        var images = document.getElementsByTagName('img');
+        for (var i = 0; i < images.length; i++) {
+            if (images[i].id === imgID) {
+                return images[i];
+            }
+        }
+        console.error('Image id ' + imgID + ' was not found.')
+        return null; // Return null if no image with the specified ID is found
+    }
+
+
+    // Image handling functions
+    function drawImage(image) {
+        findImageById('edit-image').src = image.src;
+        successful = true;
+    }
+
+    function swapImages(image1, image2, isImage1Displayed) {
+        if (isImage1Displayed) {
+            drawImage(image2);
+            document.getElementById('image_displaying').innerHTML = '<b>After Image</b>';
+        } else {
+            drawImage(image1);
+            document.getElementById('image_displaying').innerHTML = '<b>Before Image</b>';
+        }
+        return !isImage1Displayed;
+    }
+
+    function setupImageEventListeners(image1, image2, canvas, isImage1Displayed) {
+        if (!successfulEvent1) {
+            successfulEvent1 = true;
+            try {
+                document.addEventListener('keydown', (event) => {
+                    try {
+                        if (event.key === '/' || event.key === '[') {
+                            isImage1Displayed = swapImages(image1, image2, isImage1Displayed);
+                            event.preventDefault();
+                        }
+                    } catch (e) {
+                        console.log(e);
+                    }
+                });
+            } catch (e2) {
+                console.log(e2);
+                successfulEvent1 = false;
+            }
+        }
+
+        if (!successfulEvent2) {
+            successfulEvent2 = true;
+            try {
+                canvas.addEventListener('mousedown', (event) => {
+                    try {
+                        if (event.button === 1) {
+                            isImage1Displayed = swapImages(image1, image2, isImage1Displayed);
+                            event.preventDefault();
+                        }
+                    } catch (e) {
+                        console.log(e);
+                    }
+                });
+            } catch (e2) {
+                console.log(e2);
+                successfulEvent2 = false;
+            }
+        }
+
+        // if (!successfulEvent2) {
+        //     canvas.addEventListener('mousedown', (event) => {
+        //         if (event.button === 1) {
+        //             isImage1Displayed = swapImages(image1, image2, isImage1Displayed);
+        //             event.preventDefault();
+        //         }
+        //     });
+        //     successfulEvent2 = true;
+        // }
+    }
+
+    function setupHoverImageSwap(canvas, imageUrl1, imageUrl2) {
+        if (successful && successfulEvent1) return true;
+
+        const image1 = new Image();
+        const image2 = new Image();
+
+        image1.crossOrigin = 'anonymous';
+        image2.crossOrigin = 'anonymous';
+
+        image1.src = imageUrl1;
+        image2.src = imageUrl2;
+
+        let isImage1Displayed = true;
+
+        image1.onload = () => drawImage(image1);
+
+        setupImageEventListeners(image1, image2, canvas, isImage1Displayed);
+
+        image1.onerror = image2.onerror = () => console.error('An error occurred loading one of the images.');
+    }
+
+    function initializeImageSwap() {
+        const intervals = [300, 500, 1000, 5000, 10000];
+        intervals.forEach(interval => {
+            setTimeout(() => {
+                let canvas = document.getElementsByTagName('img')[0]
+                if (canvas && (!successful || !successfulEvent1)) {
+                    setupHoverImageSwap(canvas, firstImage, secondImage);
+                }
+            }, interval);
+        });
+    }
+
+    function addDraggedHandleEventListeners(draggableHandle) {
+
+        let isHandleFocused = false;
+
+        draggableHandle.addEventListener("focusin", function (event) {
+            console.log("Input element has received focus.");
+            isHandleFocused = true;
+        });
+
+        draggableHandle.addEventListener("focusout", function (event) {
+            console.log("Input element has lost focus.");
+            isHandleFocused = false;
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (isHandleFocused) {
+                switch (event.key) {
+                    case "ArrowLeft":
+                        console.log("Arrow Left key pressed.");
+                        $('.slider').data('nbtSlider').movePrev();
+                        event.preventDefault();
+                        break;
+                    case "ArrowRight":
+                        console.log("Arrow Right key pressed.");
+                        $('.slider').data('nbtSlider').moveNext();
+                        event.preventDefault();
+                        break;
+                }
+            }
+        });
+    }
+
+    function addSubmitShortcut() {
+        document.addEventListener('keydown', function (event) {
+            if (event.ctrlKey && event.key === 'Enter') {
+                document.getElementsByTagName('crowd-button')[0].click();
+            }
+        });
+    }
+
+    function initializeRadioListeners() {
+        const intervals = [100, 500, 1000, 5000, 10000];
+        let successfulRadio = false;
+        const negativeButtons = new Set();
+        const visitedButtons = new Set();
+        let successfulHandleEvent = false;
+
+        console.log('initialize radio buttons listeners');
+        intervals.forEach(interval => {
+            setTimeout(() => {
+                const draggableHandle = document.getElementsByClassName('ui-draggable-handle')[0];
+                if (draggableHandle && !successfulHandleEvent) {
+                    successfulHandleEvent = true;
+                    addDraggedHandleEventListeners(draggableHandle);
+                    let specialMode = localStorage.getItem('special');
+                    if (specialMode == '1') {
+                        let specialModeTimeout = 1000;
+                        setTimeout(() => {
+                            $('.slider').data('nbtSlider').index = 2;
+                            $('.slider').data('nbtSlider').updateValue();
+                            setDifferenceCaption();
+                        }, specialModeTimeout)
+                    }
+                }
+
+                if (!successfulRadio) {
+                    const radios = document.querySelectorAll('input[type="radio"]');
+                    addSubmitShortcut();
+                    radios.forEach(radio => {
+                        successfulRadio = true;
+                        radio.addEventListener('change', (event) => handleRadioChange(event, negativeButtons, visitedButtons));
+                    });
+                }
+            }, interval);
+        });
+    }
+
+    // Initialization
+    initializeImageSwap();
+    initializeRadioListeners();
+
+    function toggleSubcategories(subcategoryId, element) {
+        const subcategories = document.getElementById(subcategoryId);
+        subcategories.style.display = element.checked ? "block" : "none";
+    }
+</script>
+<style>
+    .tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+    }
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        cursor: default;
+        width: 510px;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -60px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .tooltip .tooltiptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #555 transparent transparent transparent;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .container {
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding: 20px;
+    }
+
+    .image-container {
+    }
+
+    .categories {
+        padding: 0px 0px 75px 40px;
+        padding-bottom: 15px !important;
+        font-size: 21px;
+        max-width: 800px;
+        /*max-width: 1022px;*/
+    }
+
+    .category {
+        padding-bottom: 24px;
+    }
+
+    .subcategory {
+        padding-bottom: 10px;
+        margin-left: 50px;
+    }
+
+    input {
+        transform: scale(1.5);
+    }
+
+    .subcategory-text-area {
+        display: block;
+    }
+
+    .radio-button {
+        cursor: pointer !important;
+        padding-left: 8px;
+        white-space: nowrap;
+    }
+
+    input[type="radio"] {
+        cursor: pointer;
+    }
+
+    .left-radio-button {
+        padding-left: 10px;
+    }
+
+</style>
+
+<!-- slider style -->
+<style>
+    @import "compass/css3";
+
+    body {
+        font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", "Lucida Grande", "Lucida Sans", "Lucida Sans Unicode", Helvetica, Arial, sans-serif;
+    }
+
+    #main {
+        width: 780px;
+        /*width: 880px;*/
+    }
+
+
+    .slider {
+        position: relative;
+        margin-top: 18px;
+        padding: 15px 15px 10px 15px;
+        border-radius: 10px;
+        box-shadow: 1px 1px 3px 1px #ddd;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .slider label {
+        position: relative;
+        font-size: 20px;
+        color: #000;
+        text-align: center;
+        display: block;
+        float: left;
+        cursor: pointer;
+    }
+
+    .slider label.active,
+    .slider label:hover {
+        color: #000;
+    }
+
+    .slider .progress-tip {
+        position: absolute;
+        text-shadow: 0.5px 0.5px #f5f5f5;
+        color: #666;
+        font-size: 10px;
+        background-color: #F5F5F5; /*background-image: -webkit-linear-gradient(top, #666 0%, #727E86 100%);*/
+        box-shadow: 0 1px 1px -0.5px #ccc;
+        border-radius: 4px;
+        padding: 4px 7px;
+    }
+
+    .slider .progress-tip:after {
+        content: "\25B8";
+        display: block;
+        font-size: 20px;
+        height: 0;
+        line-height: 0;
+        position: absolute;
+        color: #F5F5F5;
+        bottom: -3px;
+        left: 1px;
+        text-align: center;
+        text-shadow: 1px 0px 0.5px #ccc;
+        width: 100%;
+        -o-transform: rotate(90deg);
+        -moz-transform: rotate(90deg);
+        -khtml-transform: rotate(90deg);
+        -webkit-transform: rotate(90deg);
+        transform: rotate(90deg);
+    }
+
+    .ie8 .slider .progress-tip:after {
+        content: ''
+    }
+
+    .slider .progress-tip.left {
+        left: 20px;
+        font-weight: bold
+    }
+
+    .slider .progress-tip.right {
+        right: 210px;
+    }
+
+    .slider .slider-track {
+        position: relative;
+        margin-bottom: 15px;
+        height: 8px;
+        background-color: #727e86;
+        box-shadow: 0 1px 1px -0.5px #ccc;
+        border-radius: 5px;
+    }
+
+    .slider .slider-handle {
+        width: 12px;
+        height: 12px;
+        position: absolute;
+        top: -4px;
+        box-shadow: 0 1px 1px -0.5px #ccc;
+        content: '';
+        display: block;
+        background-color: #f58026;
+        border: 2px solid #fff;
+        border-radius: 11px;
+    }
+
+    .slider .slider-highlight {
+        position: absolute;
+        z-index: -1;
+        bottom: 0;
+        top: 0;
+        box-shadow: 0 1px 1px -0.5px #ddd;
+        border-radius: 2px;
+        left: 0;
+        border-bottom-left-radius: 10px;
+        border-top-left-radius: 10px;
+    }
+
+
+    /* clearfix for floated labels */
+    .clearfix:before,
+    .clearfix:after {
+        content: '';
+        display: table;
+    }
+
+    .clearfix:after {
+        clear: both;
+    }
+
+    /* For IE 6/7 (trigger hasLayout) */
+    .clearfix {
+        zoom: 1;
+    }
+
+    /* status */
+    .status {
+        margin: 20px 0 0 0
+    }
+
+    .status label {
+        margin-top: 10px;
+        color: #ccc;
+        font-size: .6em;
+    }
+
+    .status label span {
+        color: #888;
+        font-weight: bold;
+    }
+</style>
+
+<!-- slider javascript -->
+<script>
+    $.fn.nbtSlider = (function ($) {
+        // NbtSlider expects markup to be generated or written out
+        // gleans values and state from the elements in the wrapper.
+        var NbtSlider = function (container, config) {
+            container = $(container);
+            // create instance variables
+            $.extend(this, {
+                /*
+                *   ELEMENTS
+                */
+                container: container,
+                leftTip: container.find('.progress-tip.left').hide(),
+                rightTip: container.find('.progress-tip.right').hide(),
+                hidden: container.find(':input:hidden'),
+                labels: container.find('label').each(function (i) {
+                    $(this).attr('data-index', i);
+                }),
+                /*
+                *   VALUES
+                *   array of values e.g. [ { value: '', text: '' }, {  }, .. ]
+                */
+                values: container.find('label').map(function () {
+                    return {
+                        value: this.getAttribute('data-value'),
+                        text: $.trim(this.innerHTML)
+                    };
+                }).get(),
+                /*
+                *   CALLBACKS
+                */
+                // first load/activate callback
+                onLoad: function (value, index) {
+                },
+                // value change callback
+                onChange: function (value, index) {
+                },
+                // before the ui is updated to match the selected value
+                beforePosition: function (isLoadOrResize) {
+                },
+                // after the ui is updated to match the selected value
+                afterPosition: function (isLoadOrResize) {
+                }
+            }, config);
+
+            // adds non data-driven markup
+            this.build();
+
+            // uses config variables to calculate internal settings
+            this.init();
+
+            // add listeners
+            this.bind();
+
+            // sets the initial display
+            this.position();
+        };
+
+        NbtSlider.prototype = {
+            build: function () {
+                this.container.prepend(
+                    '<div class="slider-highlight"></div>' +
+                    '<div class="slider-track">' +
+                    '<a class="slider-handle" href="javascript:;"></a>' +
+                    '</div>'
+                );
+                this.handle = this.container.find('.slider-handle');
+                this.highlight = this.container.find('.slider-highlight');
+            },
+            init: function () {
+                this.numValues = this.values.length;
+                this.containerWidth = this.container.width();
+                this.containerOuterWidth = this.container.outerWidth();
+                this.containerOuterHeight = this.container.outerHeight();
+                this.containerOuter = Math.abs(this.containerOuterWidth - this.containerWidth);
+                this.gridSize = this.containerWidth / this.numValues;
+
+                this.value = this.hidden.val();
+                this.untouched = true;
+                this.index = parseInt(this.labels.filter('[data-value="' + this.value + '"]').attr('data-index') || '0', 10);
+            },
+            bind: function () {
+                var self = this;
+
+                this.container.on('click.nbtslider', function (e) {
+                    var index = self._getIndexByMouseEvent(e);
+                    self.goTo(index);
+                });
+
+                this.handle.draggable({
+                    axis: 'x',
+                    containment: 'parent',
+                    scroll: false,
+                    drag: function (e, ui) {
+                        //console.log(ui.position.left, ui.originalPosition.left);
+                        var l = ui.position.left,
+                            ol = ui.originalPosition.left;
+                        if (l !== ol && Math.abs(ol - l) >= (Math.min(self.gridSize) - 15)) { // the 15 is a move buffer
+                            if (ui.position.left > ui.originalPosition.left) {
+                                //console.log('> ',ui.position.left, ui.originalPosition.left);
+                                self.moveNext.apply(self, arguments);
+
+                            } else {
+                                //console.log('< ',ui.position.left, ui.originalPosition.left);
+                                self.movePrev.apply(self, arguments);
+                            }
+                            ui.originalPosition.left = ui.position.left;
+                        }
+                    }
+                }).on('click', function (e) {
+                    e.stopPropagation();
+                });
+            },
+
+            // sets tooltip positions and highlight
+            position: function () {
+                var isFirstLoadOrResize, self = this;
+                // support for resizeable container / window
+                // incomplete just add a resize event that check
+                // current vs previous container width and set hasResize = true
+                if (isFirstLoadOrResize = (this.hasResize || this.hasResize === undefined)) {
+                    this.beforePosition.apply(this, [isFirstLoadOrResize]);
+                    // configure container based widths
+                    this.init();
+                    this.handle.draggable({grid: [this.gridSize, 0]});
+
+                    // set label widths
+                    this.labels.width(this.gridSize);
+
+                    // position tips above container from bottom so they can grow vertically
+                    this.leftTip.css({bottom: this.containerOuterHeight + 10});
+                    this.rightTip.css({bottom: this.containerOuterHeight + 10});
+
+                    this.hasResize = false;
+                }
+
+                var func = isFirstLoadOrResize ? 'css' : 'animate',
+                    duration = 200,
+                    isLast = this.index == (this.numValues - 1),
+                    isFirst = this.index == 0;
+
+                // position the handle
+                this.handle.css({
+                    left: (this.gridSize * this.index) + (1 / 2 * this.gridSize) - (1 / 2 * this.handle.outerWidth())
+                }, duration);
+
+                // activate labels
+                this.labels.removeClass('active').eq(index).prevAll().addBack().addClass('active');
+
+
+                // position highlight
+                var highlightWidth = (this.gridSize * (this.index + 1)) + (1 / (isLast ? 1 : 2) * this.containerOuter);
+                this.highlight.stop(true, false)[func]({width: highlightWidth}, duration);
+
+                // position tooltips
+                this.leftTip.stop(true, false)[func]({
+                    left: (1 / 2 * highlightWidth) - (1 / 2 * this.leftTip.outerWidth())
+                }, duration);
+
+                this.rightTip.stop(true, false)[func]({
+                    right: (1 / 2 * (this.containerOuterWidth - highlightWidth)) - (1 / 2 * this.rightTip.outerWidth())
+                }, duration);
+
+                if (isFirstLoadOrResize) {
+                    // show tips
+                    this.leftTip.show();
+                    this.rightTip.show();
+                }
+
+                this.rightTip.toggle(!isLast);
+                // this.leftTip.toggle(!isFirst);
+
+                setTimeout(function () {
+                    self.afterPosition.apply(self, [isFirstLoadOrResize]);
+                    isFirstLoadOrResize && self.onLoad.apply(self, self.value, self.index);
+                }, isFirstLoadOrResize ? 0 : duration);
+            },
+            _getIndexByMouseEvent: function (e) {
+                var co = this.container.offset(),
+                    l = e.pageX - co.left;
+
+                return Math.floor(l / this.gridSize);
+            },
+            goTo: function (index) {
+                if (index === this.index && !this.untouched) return;
+                this.untouched = false;
+                this.index = index;
+                this.updateValue();
+            },
+            moveNext: function (e, ui) {
+                if (this.index < 3) {
+                    this.index++;
+                    this.updateValue();
+                }
+                //console.log('move next', this.index, this.value);
+            },
+            movePrev: function (e, ui) {
+                if (this.index > 0) {
+                    this.index--;
+                    this.updateValue();
+                }
+                //console.log('move prev', this.index, this.value);
+            },
+            updateValue: function () {
+                // get slider position and validate against
+                // next value to make sure it was a real move
+                // do range checks
+                if (this.values[this.index] !== undefined) {
+                    var nextVal = this.values[this.index].value;
+                    if (nextVal != this.value) {
+                        this.value = nextVal;
+                        this.hidden.val(this.value);
+                        this.onChange.apply(this, [this.value, this.index]);
+                        console.log([this.value, this.index])
+                        clickOnAccurateRadioButton(this.value);
+                        activateSliderHighlight();
+                        this.position();
+                    }
+                } else {
+                    // something went wrong with the drag buffer
+                    // find value by position now
+                }
+            }
+        };
+
+        return function (config) {
+            return this.each(function () {
+                $(this).data('nbtSlider', new NbtSlider(this, config));
+            });
+        };
+
+    })(jQuery);
+
+    $(function () {
+
+        var loadOrChange = function (value, index) {
+            $('#value').html(value);
+            $('#index').html(index);
+            <!-- this.leftTip.html('Calculated ROP for <br />' + value + ' or more dispenses'); -->
+        };
+
+        $('.slider').nbtSlider({
+            onLoad: loadOrChange,
+            onChange: loadOrChange
+        });
+    });
+
+    function activateSliderHighlight() {
+        document.getElementsByClassName('slider-highlight')[0].style.backgroundColor = '#F5F5F5';
+        document.getElementsByClassName('slider-highlight')[0].style.backgroundImage = '-webkit-linear-gradient(right, #EEE 0%, #F5F5F5 100%)';
+    }
+
+    function getRadioButtonId(accuracyLevel) {
+        if (accuracyLevel === 3) {
+            return "accurate"
+        } else if (accuracyLevel === 2) {
+            return "accurate_but_unexpected"
+        } else if (accuracyLevel === 1) {
+            return "partially_accurate"
+        } else if (accuracyLevel === 0) {
+            return "not_accurate"
+        }
+    }
+
+    function clickOnAccurateRadioButton(accuracyLevel) {
+        accuracyLevel = Number(accuracyLevel);
+        const accurateRadioButton = document.querySelector('input[id="' + getRadioButtonId(accuracyLevel) + '"]');
+        accurateRadioButton.click();
+    }
+
+</script>
+
+<!-- Modal CSS -->
+<style>
+    /* Modal styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 300px;
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 10px;
+    }
+
+    .save-btn {
+        padding: 5px 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .modal-body {
+        margin-top: 10px;
+    }
+
+    .modal-body div {
+        margin-bottom: 10px;
+    }
+
+    .save-btn, .reset-btn {
+        padding: 5px 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .reset-btn {
+        background-color: #f44336;
+    }
+
+    .settings-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 90%;
+        padding: 5px;
+    }
+</style>
+
+<!-- Modal HTML -->
+<div id="fontSizeModal" class="modal">
+    <div class="modal-header">
+        <h2>Settings Menu</h2>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <div class="settings-row">
+            <label for="widthMain">Slider Width:</label>
+            <input type="number" id="widthMain" value="880" min="50" max="1200"
+                   onchange="adjustWidth('main', this.value)">
+        </div>
+        <div class="settings-row">
+            <label for="fontSizeSliderLabel">Slider Font Size:</label>
+            <input type="number" id="fontSizeSliderLabel" value="20" min="8" max="72"
+                   onchange="adjustStyle('.slider label', 'fontSize', this.value)">
+        </div>
+        <div class="settings-row">
+            <label for="fontSizeCategories">Questions Font Size:</label>
+            <input type="number" id="fontSizeCategories" value="21" min="8" max="72"
+                   onchange="adjustStyle('.categories', 'fontSize', this.value)">
+        </div>
+        <div class="settings-row">
+            <label for="formPaddingCategories">Form Padding:</label>
+            <input type="number" id="formPaddingCategories" value="24" min="2" max="72"
+                   onchange="adjustStyle('.category', 'padding-bottom', this.value)">
+        </div>
+        <div class="settings-row">
+            <label for="formWidthCategories">Form Width:</label>
+            <input type="number" id="formWidthCategories" value="800" min="100" max="1900"
+                   onchange="adjustStyle('.categories', 'max-width', this.value)">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="save-btn" onclick="saveAndRefresh()">Save & Refresh</button>
+        <button class="reset-btn" onclick="resetDefaults()">Reset & Refresh</button>
+    </div>
+</div>
+
+<script>
+    function activateSpecialMode(status) {
+        if (status == '1' || status == '0') {
+            localStorage.setItem('special', status);
+        }
+    }
+
+    function resetDefaults() {
+        localStorage.removeItem('widthMain');
+        localStorage.removeItem('fontSize_.categories');
+        localStorage.removeItem('fontSize_.slider_label');
+        localStorage.removeItem('padding-bottom_.category');
+        localStorage.removeItem('max-width_.categories');
+        loadSettings();
+        saveAndRefresh();
+    }
+
+    function saveAndRefresh() {
+        // Values are already saved to localStorage in adjust functions
+        location.reload();
+    }
+
+    document.addEventListener('keydown', function (event) {
+        if (event.ctrlKey && event.shiftKey && event.key === 'S') {
+            event.preventDefault();
+            openModal();
+        }
+    });
+
+    function openModal() {
+        document.getElementById('fontSizeModal').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('fontSizeModal').style.display = 'none';
+    }
+
+    function adjustWidth(elementId, width) {
+        document.getElementById(elementId).style.width = width + 'px';
+        localStorage.setItem('widthMain', width);
+    }
+
+    function adjustStyle(className, cssProperty, value) {
+        let elements = document.getElementsByClassName(className);
+        elements = elements.length ? elements : document.querySelectorAll(className);
+        for (let i = 0; i < elements.length; i++) {
+            elements[i].style[cssProperty] = value;
+        }
+        localStorage.setItem(cssProperty + '_' + className.replace(' ', '_'), value);
+    }
+
+    function loadSettings() {
+        console.log('Changing Settings.')
+        const widthMain = localStorage.getItem('widthMain');
+        if (widthMain) {
+            document.getElementById('widthMain').value = widthMain;
+            adjustWidth('main', widthMain);
+        }
+
+        const fontSizeCategories = localStorage.getItem('fontSize_.categories');
+        if (fontSizeCategories) {
+            document.getElementById('fontSizeCategories').value = fontSizeCategories;
+            adjustStyle('.categories', 'fontSize', fontSizeCategories);
+        }
+
+        const fontSizeSliderLabel = localStorage.getItem('fontSize_.slider_label');
+        if (fontSizeSliderLabel) {
+            document.getElementById('fontSizeSliderLabel').value = fontSizeSliderLabel;
+            adjustStyle('.slider label', 'fontSize', fontSizeSliderLabel);
+        }
+
+        const formPadding = localStorage.getItem('padding-bottom_.category');
+        if (formPadding) {
+            document.getElementById('formPaddingCategories').value = formPadding;
+            adjustStyle('.category', 'padding-bottom', formPadding);
+        }
+
+        const formWidth = localStorage.getItem('max-width_.categories');
+        if (formWidth) {
+            document.getElementById('formWidthCategories').value = formWidth;
+            adjustStyle('.categories', 'max-width', formWidth);
+        }
+
+    }
+
+    document.addEventListener('DOMContentLoaded', loadSettings);
+</script>
+
+
+<crowd-form>
+    <div id="accuracy-decision-tree" class="modal-content unselectable">
+        <div class="drag-area"> <!-- This is the area to drag -->
+            <img src="https://live.staticflickr.com/65535/53877007709_cad3c2c9bf_k.jpg"
+                 alt="Descriptive Image Alt Text">
+            <span class="close">&times;</span>
+        </div>
+        <div class="resize-handle"></div> <!-- This is the handle to resize -->
+    </div>
+    <div id="contextual-consistency-decision-tree" class="modal-content unselectable">
+        <div class="drag-area"> <!-- This is the area to drag -->
+            <img src="https://live.staticflickr.com/65535/53877072635_ccb0c8c114_k.jpg"
+                 alt="Descriptive Image Alt Text">
+            <span class="close">&times;</span>
+        </div>
+        <div class="resize-handle"></div> <!-- This is the handle to resize -->
+    </div>
+    <div id="technical-precision-decision-tree" class="modal-content unselectable">
+        <div class="drag-area"> <!-- This is the area to drag -->
+            <img src="https://live.staticflickr.com/65535/53876893983_2548d832c8_k.jpg"
+                 alt="Descriptive Image Alt Text">
+            <span class="close">&times;</span>
+        </div>
+        <div class="resize-handle"></div> <!-- This is the handle to resize -->
+    </div>
+    <div id="artifacts-decision-tree" class="modal-content unselectable">
+        <div class="drag-area"> <!-- This is the area to drag -->
+            <img src="https://live.staticflickr.com/65535/53873417574_ccea0f18a9_k.jpg"
+                 alt="Descriptive Image Alt Text">
+            <span class="close">&times;</span>
+        </div>
+        <div class="resize-handle"></div> <!-- This is the handle to resize -->
+    </div>
+    <div id="difference-caption-explanation" class="modal-content unselectable">
+        <div class="drag-area"> <!-- This is the area to drag -->
+            <img src="https://live.staticflickr.com/65535/53873590298_3f9d513eeb_k.jpg"
+                 alt="Descriptive Image Alt Text">
+            <span class="close">&times;</span>
+        </div>
+        <div class="resize-handle"></div> <!-- This is the handle to resize -->
+    </div>
+    <div class="container">
+        <div class="image-container">
+            <img src="${Image1}" alt="Annotatable Image" id="edit-image"
+                 style="max-width: 620px; max-height: 620px; height: 620px; width: 620px;">
+        </div>
+        <div class="categories">
+            <div class="category">Current Image: <span id="image_displaying"><b>Before Image</b></span>
+            </div>
+            <div class="category">Edit Instruction: <b> "${Instruction}"</b></div>
+            <div class="category" style="display: none;">
+                <div class="tooltip" style="padding-bottom: 10px;">
+                    How accurately did the edit <b>executed</b>?
+                    <span class="tooltiptext">How accurately did the edit <b>execute</b> the specified instruction, specifically <b>reflecting the
+                    intended change</b>?</span>
+                </div>
+                <span style="display: inline-block;">
+                    <span>
+                        <input type="radio" id="not_accurate" name="is_accurate" value="not_accurate" required>
+                        <label for="not_accurate">Inaccurate</label>
+                    </span>
+                    <span>
+                        <input type="radio" id="partially_accurate" name="is_accurate" value="partially_accurate"
+                               required>
+                        <label for="partially_accurate">Inaccurate, Reflects Insturction</label>
+                    </span>
+                    <span>
+                        <input type="radio" id="accurate_but_unexpected" name="is_accurate"
+                               value="accurate_but_unexpected" required>
+                        <label for="accurate_but_unexpected">Accurate But Unexpected</label>
+                    </span>
+                    <span>
+                        <input type="radio" id="accurate" name="is_accurate" value="accurate" required>
+                        <label for="accurate">Accurate</label>
+                    </span>
+                </span>
+            </div>
+            <div class="category">
+                <div class="text-with-logo">
+                    <div class="tooltip" style="padding-bottom: 10px;">
+                        <div>
+                            How accurately did the edit <b>executed</b>?
+                            <span class="tooltiptext">How accurately did the edit <b>execute</b> the specified instruction, specifically <b>reflecting the
+                            intended change</b>?</span>
+                        </div>
+                    </div>
+                    <div class="logo-button tree-logo-button modal-button" data-target="accuracy-decision-tree">
+                        <i class="fas fa-tree"></i>
+                    </div>
+                </div>
+                <section id="main">
+                    <div class="slider clearfix">
+                        <input type="hidden" name="DispenseROPTrigger"/>
+                        <!--<span class="progress-tip left">Calculated ROP</span>-->
+                        <label data-value="0">Innacurate</label>
+                        <label data-value="1">Innacurate, Reflects Instruction</label>
+                        <label data-value="2">Accurate But Unexpected</label>
+                        <label data-value="3">Accurate</label>
+                    </div>
+
+                    <div class="status" style="display:none;">
+                        <label>value: <span id="value"></span></label>
+                        <label>index: <span id="index"></span></label>
+                    </div>
+                </section>
+            </div>
+
+            <div class="category" id="visualy_consistence_category" style="display: none;">
+                <div>
+                    <div class="text-with-logo">
+                        <div class="tooltip" style="padding-bottom: 10px;">
+
+                            <div>
+                                Did the edit maintain contextual consistency (Shape, Size, Brightness, Shadows, Color,
+                                Style, Texture, etc.)?
+                                <span class="tooltiptext">Is the <u>edited object</u> or <u>its area (in remove / replace actions)</u> consistent with the edit instruction and the image scene in terms of shape, size, brightness, shadows, texture, color, etc.?</span>
+                            </div>
+                        </div>
+
+                        <span class="radio-button left-radio-button">
+                        <input type="radio" id="visualy_consistence" name="is_visualy_consistence"
+                               value="visualy_consistence" required>
+                         <label for="visualy_consistence">Yes</label>
+                        </span>
+                        <span class="radio-button">
+                            <input type="radio" id="not_visualy_consistence" name="is_visualy_consistence"
+                                   value="not_visualy_consistence" required>
+                             <label for="not_visualy_consistence">No</label>
+                        </span>
+                        <div class="logo-button tree-logo-button modal-button"
+                             data-target="contextual-consistency-decision-tree">
+                            <i class="fas fa-tree"></i>
+                        </div>
+                    </div>
+                </div>
+                <span class="subcategory-text-area">
+                    <crowd-text-area name="visualy_consistence_explanation"
+                                     label="Please explain why the edited object isn't consistent with the edit instruction, image scene, and commonsense"
+                                     rows=1 max-rows=2
+                                     style="display: none;"></crowd-text-area>
+                </span>
+            </div>
+            <div class="category" id="good_quality_category" style="display: none;">
+                <div>
+                    <div class="text-with-logo">
+                        <div class="tooltip" style="padding-bottom: 10px;">
+                            <div>
+                                Did the edit demonstrate high technical precision (resolution, blur, and smoothness)?
+                                <span class="tooltiptext">Does the <u>edited object</u> or <u>its area (in remove / replace actions)</u> maintain the image resolution? exhibit blur? show any smoothness? etc.</span>
+                            </div>
+                        </div>
+                        <span class="radio-button left-radio-button">
+                            <input type="radio" id="good_quality" name="is_good_quality"
+                                   value="good_quality" required>
+                             <label for="good_quality">Yes</label>
+                        </span>
+                        <span class="radio-button">
+                            <input type="radio" id="not_good_quality" name="is_good_quality"
+                                   value="not_good_quality" required>
+                             <label for="not_good_quality">No</label>
+                        </span>
+                        <div class="logo-button tree-logo-button modal-button"
+                             data-target="technical-precision-decision-tree">
+                            <i class="fas fa-tree"></i>
+                        </div>
+                    </div>
+
+                </div>
+                <span class="subcategory-text-area">
+                    <crowd-text-area name="good_quality_explanation"
+                                     label="Please explain why the technical precision of the edit is not high"
+                                     rows=1 max-rows=2
+                                     style="display: none;"></crowd-text-area>
+                </span>
+            </div>
+            <div class="category">
+                <div class="text-with-logo">
+                    <div class="tooltip">
+                        <div>
+                            Are there any <b>artifacts</b> or <b>alterations</b>?
+                            <span class="tooltiptext">Are there any <b>artifacts</b> or <b>alterations</b> in the image not intended to be affected by the edit?</span>
+                        </div>
+                    </div>
+                    <span style="display: inline-block;">
+                    <span class="radio-button left-radio-button">
+                        <input type="radio" id="artifacts" name="is_artifacts" value="not_good_image_artifacts_level_2"
+                               required>
+                         <label for="artifacts">Significant</label>
+                    </span>
+                    <span class="radio-button">
+                        <input type="radio" id="artifacts" name="is_artifacts" value="not_good_image_artifacts_level_1"
+                               required>
+                         <label for="artifacts">Mild</label>
+                    </span>
+                    <span class="radio-button">
+                        <input type="radio" id="no_artifacts" name="is_artifacts" value="good_image_artifacts" required>
+                        <label for="no_artifacts">No</label>
+                    </span>
+                    </span>
+                    <div class="logo-button tree-logo-button modal-button" data-target="artifacts-decision-tree">
+                        <i class="fas fa-tree"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="category">
+                <div style="line-height: 38px;">
+                    Does the difference caption <b>"<span
+                        id="extensive_difference_caption_span">${extensive_caption}</span>"</b> accurately describe the
+                    difference?
+                    <span class="text-with-logo" style="display: inline-block !important;">
+                        <span style="display: inline-block;">
+                            <span class="radio-button left-radio-button">
+                                <input type="radio" id="extensive_difference_caption_accurate"
+                                       name="is_extensive_difference_caption_accurate"
+                                       value="extensive_difference_caption_accurate" required>
+                                <label for="extensive_difference_caption_accurate">Yes</label>
+                            </span>
+                            <span class="radio-button">
+                                <input type="radio" id="extensive_difference_caption_not_accurate"
+                                       name="is_extensive_difference_caption_accurate"
+                                       value="extensive_difference_caption_not_accurate" required>
+                                <label for="extensive_difference_caption_not_accurate">No</label>
+                            </span>
+                        </span>
+                            <span class="logo-button" style="display: inline-block !important;">
+                                <i class="fas fa-question-circle question-mark-logo  modal-button"
+                                   data-target="difference-caption-explanation" style="color: #0090b8"></i>
+                            </span>
+                        </span>
+                </div>
+                <crowd-text-area name="is_extensive_difference_caption_accurate_explenation"
+                                 label="Please modify the difference caption to accurately describe the difference."
+                                 rows=1 max-rows=2 style="display: none;"></crowd-text-area>
+            </div>
+            <!-- Add more categories as needed -->
+        </div>
+    </div>
+</crowd-form>
