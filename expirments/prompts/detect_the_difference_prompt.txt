@@ -1,0 +1,1 @@
+You are provided with before and after images of an image edit. Please describe all the differences between these two images. Focus only on the differences; do not include any irrelevant information. Ignore any style differences between the images, such as changes in artistic style, color grading, or filters.

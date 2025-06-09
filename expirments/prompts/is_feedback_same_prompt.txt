@@ -1,0 +1,6 @@
+Task: Compare two feedback responses about an image edit and determine whether they share any exact matching points. If the two feedbacks contain the same specific issue, output "Yes." If there are no matching points between the two feedbacks, output "No."
+
+Feedback A: {}
+Feedback B: {}
+
+Output only "Yes" or "No" based on whether there is an exact match of specific points in the feedbacks.

@@ -1,0 +1,9 @@
+Task: Identify the main difference that remains consistent across all provided captions.
+
+Instructions: Carefully read all the provided captions and determine the main difference that is mentioned consistently in each of them. Output only the main difference, and nothing else.
+
+{}
+
+{}
+
+{}

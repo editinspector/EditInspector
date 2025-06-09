@@ -1,0 +1,10 @@
+Task: Determine the level of similarity between pairs of items.  
+
+Instructions:
+- If the items describe the exact same object, output 2.
+- If the items describe the same type of object but with different attributes and details that do not contradict each other, output 2. If there are contradictions in attributes or details, output 1.
+- Otherwise, output 0. 
+
+Format: Output a JSON object with "explenation" and "similarityLevel" keys
+
+Comparison: Compare "{}" with "{}"

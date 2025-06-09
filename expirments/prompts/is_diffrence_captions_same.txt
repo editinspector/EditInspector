@@ -1,0 +1,10 @@
+Determine if all the differences mentioned in the first caption are present in the second caption. Answer "Yes" or "No" only.
+
+First Caption:
+{}
+
+Second Caption:
+{}
+
+Question:
+Are all the differences in the first caption present in the second caption? (Answer Yes/No only)

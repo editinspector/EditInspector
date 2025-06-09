@@ -1,0 +1,31 @@
+You will be given a caption describing the differences between two images. Identify all the editing actions performed, and their source and target elements. Edit action options include Remove, Add, Replace, Change Attribute, or None. Use None for the source or target object to indicate the absence of an object in the source or target image. Remove actions should have None for the target object. Replace and Change Attribute actions, should have both source and target objects included. If there are no editing actions to report between the two images, the output should be None.  
+
+Input:
+The first image shows a green bush. There is a black sheep with white teeth and a patch of green paint on its right front leg. The second image shows a tree where the green bush was. The black sheep now has yellow teeth and a big bell on its neck. There is no patch of green paint on the right front leg of the sheep.
+
+Output: 
+[{
+  "source_object": "green bush",
+  "target_object": "tree",
+  "action": "Replace"
+},
+{
+  "source_object": "patch of green paint",
+  "target_object": "None",
+  "action": "Remove"
+},
+{
+  "source_object": "white teeth",
+  "target_object": "yellow teeth",
+  "action": "Change Attribute"
+},
+{
+  "source_object": "None",
+  "target_object": "big bell",
+  "action": "Add"
+}]
+
+Input:
+$REPLACE_HERE$
+
+Output: 
