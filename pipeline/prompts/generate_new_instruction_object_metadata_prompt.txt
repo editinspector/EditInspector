@@ -1,0 +1,27 @@
+Replace the original target object with a new target object while keeping the instructions as similar as possible. Please output Modified Instruction and Modified Extensive Instruction. Please ensure that the Modified Instruction is distinct from the Original Instruction and reflects the change in the target object appropriately.
+
+First Example Input:
+Old Target Object: lime
+New Target Object: lemon
+Original Instruction: Add a fruit to the fruit bucket.
+Original Extensive Instruction: Add a fresh lime into a wooden bucket filled with grapes and other fruits.
+
+First Example Output:
+Modified Instruction: Add a lemon to the fruit bucket.
+Modified Extensive Instruction: Add a fresh lemon into a wooden bucket filled with grapes and other fruits.
+
+Second Example Input:
+Old Target Object: pizza
+New Target Object: flatbread
+Original Instruction: Add a pizza to the table.
+Original Extensive Instruction: Add a freshly baked pizza with tomatoes, basil, and cheese onto the wooden dining table, where other appetizers are placed.
+
+Second Example Output:
+Modified Instruction: Add a flatbread to the table.
+Modified Extensive Instruction: Add a freshly flatbread topped with tomatoes, basil, and cheese onto the wooden dining table, where other appetizers are placed.
+
+Input:
+Old Target Object: {}
+New Target Object: {} 
+Original Instruction: {}
+Original Extensive Instruction: {}

@@ -1,0 +1,18 @@
+Task: Adjust the provided caption to match the length and style of the reference caption. Make only minimal changes, such as adding or aligning phrases (e.g., "from the scene", "from the image", etc.). Use relevant details from the provided image description to enhance the difference caption naturally if necessary.
+
+Example 1:
+Caption A: The person's hand holding a phone next to the laptop on the table was removed.
+Caption B (Original): The car (automobile) were removed.
+Caption B (Adjusted): The 3D model of the car on the laptop screen was removed from the image.
+
+Example 2:
+Image Description: Two little girls are holding donuts in front of their faces.
+Caption A: The baseball cap decorated with small Christmas trees and ornaments was removed from one of the girls, changing her appearance.
+Caption B (Original): The tapestry were removed
+Caption B (Adjusted): The tapestry that was behind the girls holding donuts was removed from the image.
+
+Your Input:
+Image Description: {}
+Caption A: {}
+Caption B (Original): {}
+Caption B (Adjusted):

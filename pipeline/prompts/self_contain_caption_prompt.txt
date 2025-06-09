@@ -1,0 +1,7 @@
+Rewrite the caption to describe the differences between two images (before and after) in a neutral, self-contained manner. Focus on the observed differences, such as objects being added, removed, replaced, or modified, without implying any sequence of actions, edit history, or process of change. Avoid using words or phrases like "previously," "added before," "returned," "earlier," or "once again." Do not describe the effect or outcome of these changes on the scene or edited object (e.g., "leaving the room empty" or "the can is now empty"). Simply state what is "removed", "added", "replaced", or "changed" in the comparison. Use only the terms provided in the instructions. If the original caption uses a valid term, such as "replace" or "change," retain that exact term without switching between them or using any synonyms.
+
+Example Input: The additional balloon cat in the corner of the room was removed from the scene, leaving the room empty.
+Example Output: The balloon cat in the corner of the room was removed from the scene.
+
+Task Input: {}
+Task Output:

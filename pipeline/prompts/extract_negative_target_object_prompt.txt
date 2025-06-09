@@ -1,0 +1,22 @@
+Extract source and target objects from the edit instruction. For "Replace" and "Change," both source (existing element) and target (new/modified element) must be present. For "Add," only the target exists; source is None. For "Remove," only the source exists; target is None. If not mentioned, return None for missing fields.
+
+Examples:
+Edit Instruction: Add a yellow bullet train to the dark scene of old Los Angeles.
+Target: bullet train
+Source: None
+
+Edit Instruction: Remove throw pillows from the couch.
+Target: None
+Source: throw pillows
+
+Edit Instruction: Change shirt pattern to plaid.
+Target: shirt 
+Source: plaid shirt
+
+Edit Instruction: Replace bar stools with couch.
+Target: couch
+Source: bar stools
+
+Task Input:
+Edit Instruction: {}
+Task Output:

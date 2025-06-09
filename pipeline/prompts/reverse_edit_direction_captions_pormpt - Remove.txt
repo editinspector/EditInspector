@@ -1,0 +1,15 @@
+Your task is to create a new self-contained caption by reversing the roles of the source and target objects. Provide the old and new chains of events (Add, Remove, Replace, Change Attribute), a self-contained explanation, and an extensive caption. When reversing events, Add becomes Remove and vice versa, while Replace and Change Attribute swap the source and target objects.
+
+Remove Example Input:
+Extensive Caption: One of the two green wine glasses on the table was removed.
+
+Remove Example Output:
+Self-Contained Explanation: One of the two green wine glasses was removed. In the reversed scenario, a green wine glass was added to the one already on the table.
+Old Chain of Events: Two green wine glasses -> remove -> One green wine glass
+New Chain of Events: One green wine glass -> add -> Two green wine glasses
+New Extensive Caption: One green wine glass was added to the table.
+
+Task Input:
+Extensive Caption: {}
+
+Task Output:

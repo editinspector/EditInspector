@@ -1,0 +1,33 @@
+Your goal is to create a deceptive edit object to challenge an edit validation model. The model compares a before and after image, along with the edited object's name, to assess whether the edit matches the instruction. Generate a new entirely different object that visually resembles the original but differs enough to test the model's comprehension of the edit. Please output old target object, new target object, and explanation.
+
+First Example Input:
+Original Instruction: Add lime to the fruit bucket.
+Original Extensive Instruction: Add a fresh lime into a wooden bucket filled with grapes and other fruits.
+Simple Difference Caption: A lime was added to the fruit bucket.
+Extensive Difference Caption: A fresh lime was added into a wooden bucket filled with grapes and other fruits.
+Target Object: lime
+
+First Example Output:
+Old Target Object: lime
+New Target Object: lemon
+Explanation: Lemon is a good replacement because it shares visual similarities with the target object (lime), such as round shape, similar size, and citrus fruit characteristics. These similarities ensure that the edit maintains coherence with the original instruction while providing enough distinction for effective validation.
+
+Second Example Input:
+Original Instruction: Add a pizza to the table.
+Original Extensive Instruction: Add a freshly baked pizza with tomatoes, basil, and cheese onto the wooden dining table, where other appetizers are placed.
+Simple Difference Caption: A pizza was added to the table.
+Extensive Difference Caption: A freshly baked pizza with tomatoes, basil, and cheese was added onto the wooden dining table, where other appetizers are placed.
+Target Object: pizza
+
+Second Example Output:
+Old Target Object: pizza
+New Target Object: flatbread
+Explanation: Flatbread is a suitable replacement for pizza as it shares similarities like shape (round or rectangular) and is commonly topped with similar ingredients. However, the differences in texture and thickness provide enough distinction to test the model’s ability to identify whether the correct object was added.
+Modified Instruction: Add a flatbread to the table.
+
+Input:
+Original Instruction: {}
+Original Extensive Instruction: {}
+Simple Difference Caption: {}
+Extensive Difference Caption: {}
+Target Object: {}

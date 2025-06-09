@@ -1,0 +1,23 @@
+Given an editing instruction that applies exclusively to a specific area of an image, along with detailed descriptions of that area before and after editing, determine the correct editing action. Options include Remove, Add, Replace, Change Attribute, or None. For the chosen action, provide a brief and detailed description of the edit, identify the source and target elements within the specified area, and create concise captions to illustrate the changes made.
+
+Input:
+Editing Instruction: Leave only the scissor on the cup
+Before Editing Mask Description: The image shows three pens in a cup. The pens are blue, black, and red. The red pen is on top of the other two pens.
+After Editing Mask Description: The image is out of focus. There is a pair of scissors and a white cup on the table.
+
+Output:
+Edit Action Type: Replace
+Short Difference Caption: The pens were replaced with scissors.
+Short Edit Description: Replace pens with scissors.
+Source Object: pens
+Target Object: scissors
+Edit Explanation: The instruction to "Leave only the scissor on the cup" required the replacement of the pens with scissors, as the end goal was to have only the scissors associated with the cup in the image, effectively changing the main elements within the scene.
+Extensive Edit Description: Replace the three pens in the cup with a pair of scissors.
+Extensive Difference Caption: The three blue, black, and red pens were replaced with a pair of scissors.
+
+Input:
+Editing Instruction: {}
+Before Editing Mask Description: {}
+After Editing Mask Description: {}
+
+Output:

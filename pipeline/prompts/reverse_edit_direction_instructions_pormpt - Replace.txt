@@ -1,0 +1,15 @@
+Please create a new self-contained edit instruction to reverse the previously applied changes on specific objects. Please output Old Chain of Events, New Chain of Events, a self-contained explanation, and Edit Instruction. Avoid implying prior existence of elements (e.g., say 'Add some cars to the background' instead of 'Add the cars'). Avoid using words or phrases like "previously," "added before," "returned," "earlier," "original,", or "once again". Do not add or omit any details. 
+
+Example Input:
+Edit Instruction: Replace phone, iPod, and earphones with keyboard.
+
+Example Output:
+Self-Contained Explanation: The phone, iPod, and earphones were removed, and the keyboard was added. In the reversed scenario, the keyboard is replaced by the phone, iPod, and earphones, with no reference to past states or actions.
+Old Chain of Events: phone, iPod, earphones -> replace -> keyboard
+New Chain of Events: keyboard -> replace -> phone, iPod, earphones 
+Edit Instruction: Replace keyboard with phone, iPod, and earphones.
+
+Task Input:
+Edit Instruction: {}
+
+Task Output:

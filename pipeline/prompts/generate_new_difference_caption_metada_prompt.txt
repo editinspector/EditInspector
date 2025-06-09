@@ -1,0 +1,27 @@
+Replace the original target object with a new target object while keeping the difference captions as similar as possible. Please output Simple Difference caption and Extensive Difference caption.
+
+First Example Input:
+Old Target Object: lime
+New Target Object: lemon
+Simple Difference Caption: A lime was added to the fruit bucket.
+Extensive Difference Caption: A fresh lime was added into a wooden bucket filled with grapes and other fruits.
+
+First Example Output:
+Simple Difference Caption: A lemon was added to the fruit bucket.
+Extensive Difference Caption: A fresh lemon was added into a wooden bucket filled with grapes and other fruits.
+
+Second Example Input:
+Old Target Object: pizza
+New Target Object: flatbread
+Simple Difference Caption: A pizza was added to the table.
+Extensive Difference Caption: A freshly baked pizza with tomatoes, basil, and cheese was added onto the wooden dining table, where other appetizers are placed.
+
+Second Example Output:
+Simple Difference Caption: A flatbread was added to the table.
+Extensive Difference Caption: A freshly flatbread topped with tomatoes, basil, and cheese was added onto the wooden dining table, where other appetizers are placed.
+
+Input:
+Old Target Object: {}
+New Target Object: {} 
+Simple Difference Caption: {}
+Extensive Difference Caption: {}

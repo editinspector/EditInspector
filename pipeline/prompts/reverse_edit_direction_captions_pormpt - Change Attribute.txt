@@ -1,0 +1,17 @@
+Your task is to create a new self-contained caption by reversing the roles of the source and target objects. Provide the old and new chains of events (Change Attribute, Replace, Add, Remove), a self-contained explanation, and an extensive caption. When reversing events, Add becomes Remove and vice versa, while Replace and Change Attribute swap the source and target objects. Ensure no details are added or omitted. 
+
+If the original attribute is unspecified (e.g., "The microphone changed to blue," with the original color not mentioned), the reversed caption must preserve this ambiguity. In such cases, the new caption should describe the change generically (e.g., "The blue microphone was changed to another color") to reflect the absence of details about the original state.
+
+Change Attribute Example Input:
+Extensive Caption: The green and white striped polo shirt was changed to a green and white plaid shirt.
+
+Change Attribute Example Output:
+Self-Contained Explanation: The green and white striped polo shirt was altered to become a green and white plaid shirt. In the reversed scenario, the green and white plaid shirt is changed to a green and white striped polo shirt, with no reference to past states or actions.  
+Old Chain Of Events: green and white striped polo shirt -> change attribute -> green and white plaid shirt  
+New Chain Of Events: green and white plaid shirt -> change attribute -> green and white striped polo shirt  
+New Extensive Caption: The green and white plaid shirt was changed to a green and white striped polo shirt.
+
+Task Input:
+Extensive Caption: {}
+
+Task Output:

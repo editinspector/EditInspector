@@ -1,0 +1,15 @@
+Your task is to create a new self-contained caption by reversing the roles of the source and target objects. Provide the old and new chains of events (Add, Remove, Replace, Change Attribute), a self-contained explanation, and an extensive caption. When reversing events, Add becomes Remove and vice versa, while Replace and Change Attribute swap the source and target objects.
+
+Add Example Input:
+Extensive Caption: A balloon cat was added to the corner of the room, creating a new focal point in the image.
+
+Add Example Output:
+Self-Contained Explanation: A balloon cat was introduced to the previously empty corner of the room, establishing a new focal point. In the reversed scenario, the balloon cat is removed from the corner without mentioning its previous addition or suggesting any change in the room's state or appearance after its removal.
+Old Chain of Events: Add -> balloon cat
+New Chain of Events: Remove -> balloon cat
+New Extensive Caption: The balloon cat in the corner of the room was removed from the scene.
+
+Task Input:
+Extensive Caption: {}
+
+Task Output:

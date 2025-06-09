@@ -1,0 +1,15 @@
+Your task is to create a new self-contained caption by reversing the roles of the source and target objects. Provide the old and new chains of events (Add, Remove, Replace, Change Attribute), a self-contained explanation, and an extensive caption. When reversing events, Add becomes Remove and vice versa, while Replace and Change Attribute swap the source and target objects. Ensure no details are added or omitted.
+
+Replace Example Input:
+Extensive Caption: The phone, iPod, and earphones were replaced with a gaming keyboard with customizable RGB lighting and mechanical switches.
+
+Replace Example Output:
+Self-Contained Explanation: The phone, iPod, and earphones were removed, and the RGB-lit gaming keyboard was added. In the reversed scenario, the keyboard is replaced by the phone, iPod, and earphones, with no reference to past states or actions.
+Old Chain Of Events: phone, iPod, earphones -> replace -> keyboard
+New Chain Of Events: keyboard -> replace -> phone, iPod, earphones
+New Extensive Caption: The gaming keyboard with customizable RGB lighting and mechanical switches was replaced with a phone, an iPod, and a pair of earphones.
+
+Task Input:
+Extensive Caption: {}
+
+Task Output:

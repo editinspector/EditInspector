@@ -1,0 +1,41 @@
+Please change the attribute of the target object for a visually different choice. Output the source object, modified target object, modified instruction, modified extensive instruction, a simple difference caption, and an extensive difference caption. Only alter the attributes of the target object to be distinctly different, keep other details unchanged, and do not add new objects. Ensure the modified instruction differs from the original.
+
+First Example Input:
+Original Instruction: Change balcony material to wood.
+Original Extensive Instruction: Change the material of the balcony from metal to wood.
+Simple Difference Caption: The balcony's material was changed to wood.
+Extensive Difference Caption: The metal balcony was transformed into a wood balcony.
+Source Object: metal balcony
+Target Object: wooden balcony
+
+First Example Output:
+Modified Instruction: Change balcony material to marble.
+Source Object: metal balcony
+Modified Target Object: marble balcony
+Modified Extensive Instruction: Change the material of the balcony from metal to marble.
+Modified Simple Difference Caption: The balcony's material was changed to marble.
+Modified Extensive Difference Caption: The metal balcony was transformed into a marble balcony.
+
+Second Example Input:
+Original Instruction: Close the window.
+Original Extensive Instruction: Change the attribute of the window from open to closed.
+Simple Difference Caption: The window was closed.
+Extensive Difference Caption: The previously open window in the bathroom is now closed.
+Source Object: open window
+Target Object: closed window
+
+Second Example Output:
+Modified Instruction: Close the window partially.
+Source Object: open window  
+Modified Target Object: partially closed window.  
+Modified Extensive Instruction: Change the attribute of the window from open to partially closed.  
+Modified Simple Difference Caption: The window was partially closed.  
+Modified Extensive Difference Caption: The previously open window in the bathroom is now partially closed. 
+
+Input:
+Original Instruction: {}
+Original Extensive Instruction: {}
+Simple Difference Caption: {}
+Extensive Difference Caption: {}
+Source Object: {}
+Target Object: {}

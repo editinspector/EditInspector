@@ -1,0 +1,26 @@
+Your task is to craft a deceptive edit instruction aimed at testing the discernment of an edit validation model. This model evaluates a before and after image alongside the edit instruction to determine if the edit was executed as described. Replace the target with new target that should visually resemble the original, yet be distinct enough to validate the edit's intent. Please output old target object, new target object, explanation, modified instruction, extensive modified instruction, simple difference caption and extensive difference caption.
+
+Input:
+Original Instruction: Replace the cellphone on the living room table with a tablet
+Original Extensive Instruction: Replace the black cellphone on the living room table, near the cup of tea with a white tablet
+Simple Difference Caption: The cellphone was replaced with a tablet
+Extensive Difference Caption: The black cellphone near the cup of tea was replaced with a white tablet.
+Source Object: cellphone
+Target Object: tablet
+
+Output:
+Old Target Object: tablet
+New Target Object: laptop
+Explanation: The replacement of the tablet with a laptop maintains the essence of the original instruction while introducing an object that resembles the tablet but is visually distinguishable. Both tablets and laptops share some visual similarities as electronic devices commonly found on living room tables. They both typically feature a screen and are portable. However, upon closer inspection, they exhibit notable differences. Laptops often have a clamshell design with a keyboard attached to the lower half, while tablets have a flat, touch-sensitive screen without an attached keyboard. This modification tests the model's ability to recognize objects that visually resemble the target object, although visually distinct.
+Modified Instruction: Replace the cellphone on the living room table with a laptop
+Modified Extensive Instruction: Replace the black cellphone on the living room table, near the cup of tea with a white laptop
+Simple Difference Caption: The cellphone was replaced with a laptop
+Extensive Difference Caption: The black cellphone near the cup of tea was replaced with a white laptop.
+
+Input:
+Original Instruction: {}
+Original Extensive Instruction: {}
+Simple Difference Caption: {}
+Extensive Difference Caption: {}
+Source Object: {}
+Target Object: {}
