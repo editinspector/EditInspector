@@ -24,7 +24,7 @@
   2. **Reverse-direction augmentation** (flip add/remove/replace/attribute edits)  
 
 ## Abstract
-Text-guided image editing is widespread, yet verifying edits is still hard. **EditInspector** provides a five-dimension benchmark (accuracy, artifacts, technical precision, contextual consistency, change description). It contains nearly 1 000 annotated edits, a zero-shot caption pipeline that doubles SoTA main-difference accuracy, a 64 %-accurate artifact detector, and a fine-tuned LLaVA model matching larger VLMs at lower cost.
+Text-guided image editing, fueled by recent advancements in generative AI, is becoming increasingly widespread. This trend highlights the need for a comprehensive framework to verify text-guided edits and assess their quality. To address this need, we introduce EditInspector, a novel benchmark for evaluation of text-guided image edits, based on human annotations collected using an extensive template for edit verification. We leverage EditInspector to evaluate the performance of state-of-the-art (SoTA) vision and language models in assessing edits across various dimensions, including accuracy, artifact detection, visual quality, seamless integration with the image scene, adherence to common sense, and the ability to describe edit-induced changes. Our findings indicate that current models struggle to evaluate edits comprehensively and frequently hallucinate when describing the changes. To address these challenges, we propose two novel methods that outperform SoTA models in both artifact detection and difference caption generation.
 
 ## Citation
 ```bibtex
